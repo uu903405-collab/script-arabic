@@ -52,12 +52,48 @@ st.markdown("""
         border-radius: 0.5rem;
         text-align: center;
     }
+    .script-info-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 0.8rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .script-info-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 0.5rem;
+    }
+    .script-info-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        text-align: justify;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 
 # CONFIGURATION
 MODEL_PATH = "best.pt"  # Model file should be in the same directory as main.py
+
+# SCRIPT INFORMATION DATABASE
+SCRIPT_INFO = {
+    "kufi": {
+        "title": "The Kufi Script",
+        "description": "Kufi is the oldest calligraphic form of the various Arabic scripts and consists of a modified form of the old Nabataean script. Kufi developed around the end of the 7th century in Kufa, Iraq, from which it takes its name, and other centers. Until about the 11th century it was the main script used to copy Qur'ans. Square or geometric Kufi is a very simplified rectangular style of Kufi widely used for tiling."
+    },
+    "thuluth": {
+        "title": "The Thuluth Script",
+        "description": "Thuluth (from Arabic: ثلث‎ ṯhuluṯh \"one-third\") is a script variety of Islamic calligraphy invented by the Persian Ibn Muqlah Shirazi, which made its first appearance in the 11th century CE (fourth Hijri). The straight angular forms of Kufi script were replaced in the new script by curved and oblique lines. In Thuluth, one-third of each letter slopes, from which the name (meaning \"a third\" in Arabic) comes. It is a large and elegant, cursive script, used in medieval times on mosque decorations. Various calligraphic styles evolved from Thuluth through slight changes of form."
+    },
+    "muhaqqaq": {
+        "title": "The Muhaqqaq Script",
+        "description": "Muhaqqaq is one of the main six types of calligraphic script in Arabic. The Arabic word muḥaqqaq (محقَّق) means \"consummate\" or \"clear\". Often used to copy maṣāḥif (singular muṣḥaf, i.e. loose sheets of Quran texts), this intricate type of script was considered one of the most beautiful, as well as one of the most difficult to execute well. The script saw its greatest use in the Mamluk Sultanate era (1250–1516/1517). In the Ottoman Empire, it was gradually displaced by Thuluth and Naskh; from the 18th century onward, its use was largely restricted to the Basmala in Hilyas."
+    }
+}
 
 
 # LOAD MODEL (with caching)
@@ -154,10 +190,35 @@ def draw_predictions(image, result, show_conf=True, show_labels=True):
     return Image.fromarray(img_array)
 
 
+def display_script_information(detected_classes):
+    """Display information about detected Arabic scripts"""
+    if not detected_classes:
+        return
+    
+    st.markdown("---")
+    st.subheader("📖 About the Detected Scripts")
+    
+    # Get unique detected scripts
+    unique_scripts = set(detected_classes)
+    
+    for script_name in unique_scripts:
+        # Normalize script name to match dictionary keys
+        script_key = script_name.lower()
+        
+        if script_key in SCRIPT_INFO:
+            info = SCRIPT_INFO[script_key]
+            st.markdown(f"""
+            <div class="script-info-box">
+                <div class="script-info-title">✨ {info['title']}</div>
+                <div class="script-info-text">{info['description']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
 # MAIN APP
 def main():
     # Header
-    st.markdown('<h1 class="main-header">Arabic Script Detection</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">📜 Arabic Script Detection</h1>', unsafe_allow_html=True)
     
     # Load model
     model = load_model(MODEL_PATH)
@@ -243,7 +304,7 @@ def main():
             st.caption(f"Size: {image.size[0]} x {image.size[1]} pixels")
         
         # Run detection automatically or with button
-        run_detection = st.button("run Detection", type="primary", use_container_width=True)
+        run_detection = st.button("🔍 run Detection", type="primary", use_container_width=True)
         
         if run_detection:
             with st.spinner("Detecting objects..."):
@@ -265,7 +326,7 @@ def main():
                 
                 # Display detection statistics
                 st.markdown("---")
-                st.subheader("Detection Statistics")
+                st.subheader("📊 Detection Statistics")
                 
                 if len(boxes) > 0:
                     # Summary metrics
@@ -282,8 +343,10 @@ def main():
                     # Class distribution
                     st.subheader("Class Distribution")
                     class_counts = {}
+                    detected_class_names = []
                     for cls_id in class_ids:
                         class_name = model.names[cls_id]
+                        detected_class_names.append(class_name)
                         class_counts[class_name] = class_counts.get(class_name, 0) + 1
                     
                     # Display as columns
@@ -297,8 +360,11 @@ def main():
                             </div>
                             """, unsafe_allow_html=True)
                     
+                    # Display script information
+                    display_script_information(detected_class_names)
+                    
                     # Detailed detection info
-                    with st.expander("Detailed Detection Information"):
+                    with st.expander("🔍 Detailed Detection Information"):
                         for i, (box, conf, cls_id) in enumerate(zip(boxes, confidences, class_ids)):
                             col_a, col_b = st.columns([1, 3])
                             with col_a:
@@ -311,7 +377,7 @@ def main():
                     
                     # Download section
                     st.markdown("---")
-                    st.subheader("Download Results")
+                    st.subheader("💾 Download Results")
                     
                     col_dl1, col_dl2, col_dl3 = st.columns(3)
                     
@@ -375,7 +441,7 @@ Detection Details:
                for i, (box, conf, cls_id) in enumerate(zip(boxes, confidences, class_ids))])}
 """
                         st.download_button(
-                            label="Download Report",
+                            label="📄 Download Report",
                             data=summary,
                             file_name="detection_report.txt",
                             mime="text/plain",
@@ -383,17 +449,17 @@ Detection Details:
                         )
                 
                 else:
-                    st.warning("No objects detected!")
+                    st.warning("⚠️ No objects detected!")
                     st.info(f"Try lowering the confidence threshold (current: {conf_threshold})")
     
     else:
-        st.info("Please upload an image or take a photo to start detection")
+        st.info("👆 Please upload an image or take a photo to start detection")
     
     # FOOTER
     st.markdown("---")
     st.markdown(
         "<div style='text-align: center; color: gray; padding: 1rem;'>"
-        "Built with hard work"
+        "Built with hard work | Arabic Script Detection System"
         "</div>",
         unsafe_allow_html=True
     )
