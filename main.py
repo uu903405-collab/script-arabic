@@ -203,16 +203,26 @@ def display_script_information(detected_classes):
     
     for script_name in unique_scripts:
         # Normalize script name to match dictionary keys
-        script_key = script_name.lower()
+        script_key = script_name.lower().strip()
         
-        if script_key in SCRIPT_INFO:
-            info = SCRIPT_INFO[script_key]
+        # Try to find matching key in SCRIPT_INFO
+        matched_key = None
+        for info_key in SCRIPT_INFO.keys():
+            if info_key in script_key or script_key in info_key:
+                matched_key = info_key
+                break
+        
+        if matched_key:
+            info = SCRIPT_INFO[matched_key]
             st.markdown(f"""
             <div class="script-info-box">
                 <div class="script-info-title">✨ {info['title']}</div>
                 <div class="script-info-text">{info['description']}</div>
             </div>
             """, unsafe_allow_html=True)
+        else:
+            # Debug: Show what script name was detected but not matched
+            st.warning(f"ℹ️ Script detected: '{script_name}' - Information not available yet.")
 
 
 # MAIN APP
