@@ -89,6 +89,10 @@ SCRIPT_INFO = {
         "title": "The Thuluth Script",
         "description": "Thuluth (from Arabic: ثلث‎ ṯhuluṯh \"one-third\") is a script variety of Islamic calligraphy invented by the Persian Ibn Muqlah Shirazi, which made its first appearance in the 11th century CE (fourth Hijri). The straight angular forms of Kufi script were replaced in the new script by curved and oblique lines. In Thuluth, one-third of each letter slopes, from which the name (meaning \"a third\" in Arabic) comes. It is a large and elegant, cursive script, used in medieval times on mosque decorations. Various calligraphic styles evolved from Thuluth through slight changes of form."
     },
+    "muhaqaq": {
+        "title": "The Muhaqqaq Script",
+        "description": "Muhaqqaq is one of the main six types of calligraphic script in Arabic. The Arabic word muḥaqqaq (محقَّق) means \"consummate\" or \"clear\". Often used to copy maṣāḥif (singular muṣḥaf, i.e. loose sheets of Quran texts), this intricate type of script was considered one of the most beautiful, as well as one of the most difficult to execute well. The script saw its greatest use in the Mamluk Sultanate era (1250–1516/1517). In the Ottoman Empire, it was gradually displaced by Thuluth and Naskh; from the 18th century onward, its use was largely restricted to the Basmala in Hilyas."
+    },
     "muhaqqaq": {
         "title": "The Muhaqqaq Script",
         "description": "Muhaqqaq is one of the main six types of calligraphic script in Arabic. The Arabic word muḥaqqaq (محقَّق) means \"consummate\" or \"clear\". Often used to copy maṣāḥif (singular muṣḥaf, i.e. loose sheets of Quran texts), this intricate type of script was considered one of the most beautiful, as well as one of the most difficult to execute well. The script saw its greatest use in the Mamluk Sultanate era (1250–1516/1517). In the Ottoman Empire, it was gradually displaced by Thuluth and Naskh; from the 18th century onward, its use was largely restricted to the Basmala in Hilyas."
